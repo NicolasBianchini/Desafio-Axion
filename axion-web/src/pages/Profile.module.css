@@ -106,6 +106,12 @@
   border-bottom: none;
 }
 
+.inputGroup label {
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
+
 .label {
   font-weight: 600;
   color: #6b7280;
@@ -143,17 +149,57 @@
   font-family: 'Open Sans', sans-serif;
   transition: all 0.2s;
   color: #1f2937;
+  background: white;
 }
 
 .input:focus {
   outline: none;
   border-color: #818cf8;
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+  background: white;
 }
 
 .input:disabled {
   background: #f9fafb;
   cursor: not-allowed;
+}
+
+.passwordField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordField input {
+  padding-right: 2.5rem !important;
+  width: 100%;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.togglePassword:hover {
+  color: #374151;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.togglePassword:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .submitButton {

@@ -5,15 +5,18 @@ import type { User } from '../auth/authStore';
 import { apiClient } from '../api/client';
 import { authService } from '../auth/authService';
 import styles from './Profile.module.css';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export const Profile = () => {
     const [user, setUser] = useState<User | null>(null);
-    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,14 +26,29 @@ export const Profile = () => {
             return;
         }
         setUser(currentUser);
+        checkAdminRole();
     }, [navigate]);
+
+    const checkAdminRole = async () => {
+        const currentUser = authStore.getUser();
+        if (!currentUser) return;
+
+        try {
+            const response = await apiClient.get(`/users/${currentUser.id}`);
+            const userRole = response.data.role?.type || response.data.role?.name;
+            const isAdminUser = userRole === 'admin' || userRole === 'super-admin' || userRole === 'administrator';
+            setIsAdmin(isAdminUser);
+        } catch (err) {
+            console.error('Error checking role:', err);
+        }
+    };
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
         setError('');
 
-        if (!currentPassword || !newPassword || !confirmPassword) {
+        if (!newPassword || !confirmPassword) {
             setError('Preencha todos os campos');
             return;
         }
@@ -47,23 +65,16 @@ export const Profile = () => {
 
         setLoading(true);
         try {
-            // Primeiro valida a senha atual fazendo login novamente
-            await apiClient.post('/auth/local', {
-                identifier: user?.email,
-                password: currentPassword,
-            });
-
-            // Atualiza a senha
+            // Atualiza a senha diretamente
             await apiClient.put(`/users/${user?.id}`, {
                 password: newPassword,
             });
 
             setMessage('Senha alterada com sucesso!');
-            setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
         } catch (err: any) {
-            setError(err.response?.data?.message?.[0]?.messages?.[0]?.message || 'Erro ao alterar senha. Verifique a senha atual.');
+            setError(err.response?.data?.message?.[0]?.messages?.[0]?.message || 'Erro ao alterar senha.');
         } finally {
             setLoading(false);
         }
@@ -86,6 +97,7 @@ export const Profile = () => {
                     <button onClick={() => navigate('/people')} className={styles.navButton}>Pessoas</button>
                     <button onClick={() => navigate('/foods')} className={styles.navButton}>Comidas</button>
                     <button onClick={() => navigate('/places')} className={styles.navButton}>Locais</button>
+                    {isAdmin && <button onClick={() => navigate('/users')} className={styles.navButton}>Usuários</button>}
                     <button onClick={() => navigate('/profile')} className={styles.navButton}>Perfil</button>
                     <button onClick={handleLogout} className={styles.logoutButton}>Sair</button>
                 </nav>
@@ -116,45 +128,51 @@ export const Profile = () => {
 
                     <form onSubmit={handleChangePassword} className={styles.form}>
                         <div className={styles.inputGroup}>
-                            <label htmlFor="currentPassword" className={styles.label}>
-                                Senha Atual
-                            </label>
-                            <input
-                                id="currentPassword"
-                                type="password"
-                                value={currentPassword}
-                                onChange={(e) => setCurrentPassword(e.target.value)}
-                                className={styles.input}
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="newPassword" className={styles.label}>
+                            <label htmlFor="newPassword">
                                 Nova Senha
                             </label>
-                            <input
-                                id="newPassword"
-                                type="password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                className={styles.input}
-                                disabled={loading}
-                            />
+                            <div className={styles.passwordField}>
+                                <input
+                                    id="newPassword"
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className={styles.input}
+                                    disabled={loading}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.togglePassword}
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    disabled={loading}
+                                >
+                                    {showNewPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         <div className={styles.inputGroup}>
-                            <label htmlFor="confirmPassword" className={styles.label}>
+                            <label htmlFor="confirmPassword">
                                 Confirmar Nova Senha
                             </label>
-                            <input
-                                id="confirmPassword"
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className={styles.input}
-                                disabled={loading}
-                            />
+                            <div className={styles.passwordField}>
+                                <input
+                                    id="confirmPassword"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className={styles.input}
+                                    disabled={loading}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.togglePassword}
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    disabled={loading}
+                                >
+                                    {showConfirmPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         {message && (

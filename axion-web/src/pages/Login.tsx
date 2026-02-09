@@ -2,12 +2,14 @@ import { useState, FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../auth/authService';
 import styles from './Login.module.css';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -61,14 +63,24 @@ export const Login = () => {
 
                     <div className={styles.field}>
                         <label htmlFor="password">Senha</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            disabled={loading}
-                        />
+                        <div className={styles.passwordField}>
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                disabled={loading}
+                            />
+                            <button
+                                type="button"
+                                className={styles.togglePassword}
+                                onClick={() => setShowPassword(!showPassword)}
+                                disabled={loading}
+                            >
+                                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     {error && <div className={styles.error}>{error}</div>}

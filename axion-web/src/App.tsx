@@ -4,6 +4,7 @@ import { People } from './pages/People';
 import { Foods } from './pages/Foods';
 import { Places } from './pages/Places';
 import { Profile } from './pages/Profile';
+import { Users } from './pages/Users';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import './styles/globals.css';
 
@@ -45,6 +46,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users />
             </ProtectedRoute>
           }
         />
