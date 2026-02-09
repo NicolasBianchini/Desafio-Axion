@@ -1,0 +1,180 @@
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.header {
+  background: white;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navButton {
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  color: #6b7280;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.navButton:hover {
+  background: #f3f4f6;
+  color: #2c3e50;
+}
+
+.logoutButton {
+  padding: 0.625rem 1.25rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.logoutButton:hover {
+  background: #fecaca;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sortButton {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #2c3e50;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.sortButton:hover {
+  border-color: #818cf8;
+  color: #818cf8;
+  background: #f5f6ff;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.errorMessage {
+  color: #dc2626;
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: #818cf8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.retryButton:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s;
+  cursor: pointer;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+

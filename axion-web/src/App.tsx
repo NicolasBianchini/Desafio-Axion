@@ -3,6 +3,7 @@ import { Login } from './pages/Login';
 import { People } from './pages/People';
 import { Foods } from './pages/Foods';
 import { Places } from './pages/Places';
+import { Profile } from './pages/Profile';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import './styles/globals.css';
 
@@ -35,6 +36,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Places />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

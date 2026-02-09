@@ -1,8 +1,113 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiClient } from '../api/client';
+import { authService } from '../auth/authService';
+import styles from './People.module.css';
+
+interface Place {
+    id: number;
+    name: string;
+    link: string;
+}
+
+type SortOrder = 'asc' | 'desc';
+
 export const Places = () => {
+    const [places, setPlaces] = useState<Place[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+    const navigate = useNavigate();
+
+    const fetchPlaces = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const response = await apiClient.get('/places');
+            setPlaces(response.data.data || response.data);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Erro ao carregar locais');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleSort = () => {
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortedPlaces = [...places].sort((a, b) => {
+        if (sortOrder === 'asc') {
+            return a.name.localeCompare(b.name);
+        }
+        return b.name.localeCompare(a.name);
+    });
+
+    useEffect(() => {
+        fetchPlaces();
+    }, []);
+
+    const handleLogout = () => {
+        authService.logout();
+        navigate('/login');
+    };
+
     return (
-        <div>
-            <h1>Locais</h1>
-            <p>Lista de locais virá aqui</p>
+        <div className={styles.container}>
+            <header className={styles.header}>
+                <h1 className={styles.logo}>Axion Test</h1>
+                <nav className={styles.nav}>
+                    <button onClick={() => navigate('/people')} className={styles.navButton}>Pessoas</button>
+                    <button onClick={() => navigate('/foods')} className={styles.navButton}>Comidas</button>
+                    <button onClick={() => navigate('/places')} className={styles.navButton}>Locais</button>
+                    <button onClick={() => navigate('/profile')} className={styles.navButton}>Perfil</button>
+                    <button onClick={handleLogout} className={styles.logoutButton}>Sair</button>
+                </nav>
+            </header>
+
+            <main className={styles.main}>
+                <div className={styles.titleRow}>
+                    <h2 className={styles.title}>Locais</h2>
+                    <button onClick={toggleSort} className={styles.sortButton}>
+                        {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+                    </button>
+                </div>
+
+                {loading && (
+                    <div className={styles.loading}>Carregando...</div>
+                )}
+
+                {error && (
+                    <div className={styles.errorContainer}>
+                        <p className={styles.errorMessage}>{error}</p>
+                        <button onClick={fetchPlaces} className={styles.retryButton}>
+                            Tentar novamente
+                        </button>
+                    </div>
+                )}
+
+                {!loading && !error && places.length === 0 && (
+                    <div className={styles.empty}>Nenhum local encontrado</div>
+                )}
+
+                {!loading && !error && sortedPlaces.length > 0 && (
+                    <div className={styles.grid}>
+                        {sortedPlaces.map((place) => (
+                            <div
+                                key={place.id}
+                                className={styles.card}
+                                style={{
+                                    backgroundImage: place.link ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${place.link})` : 'none',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center'
+                                }}
+                            >
+                                <h3 className={styles.cardTitle}>{place.name}</h3>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </main>
         </div>
     );
 };
