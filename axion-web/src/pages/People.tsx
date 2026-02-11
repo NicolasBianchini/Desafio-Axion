@@ -78,18 +78,20 @@ export const People = () => {
 
     return (
         <Layout isAdmin={isAdmin}>
-            <div className={styles.titleRow}>
-                <h2 className={styles.title}>Pessoas</h2>
-                <div className={styles.actions}>
-                    {isAdmin && (
-                        <button onClick={openCreateModal} className={styles.addButton}>
-                            <FiPlus size={18} /> Novo
-                        </button>
-                    )}
-                    <button onClick={toggleSort} className={styles.sortButton}>
-                        {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+            <div className={styles.titleSection}>
+                <h2 className={styles.title}>LIST OF PEOPLE</h2>
+                <div className={styles.titleUnderline}></div>
+            </div>
+
+            <div className={styles.actionsRow}>
+                {isAdmin && (
+                    <button onClick={openCreateModal} className={styles.addButton}>
+                        <FiPlus size={18} /> Novo
                     </button>
-                </div>
+                )}
+                <button onClick={toggleSort} className={styles.sortButton}>
+                    {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+                </button>
             </div>
 
             {loading && <div className={styles.loading}>Carregando...</div>}

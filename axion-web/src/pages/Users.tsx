@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
-import { Header } from '../components/Header';
+import { Layout } from '../components/Layout';
 import { useAdminCheck } from '../hooks/useAdminCheck';
 import styles from './Users.module.css';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -60,7 +60,7 @@ export const Users = () => {
 
     useEffect(() => {
         if (!adminLoading && !isAdmin) {
-            setError('Você não tem permissão para acessar esta página');
+            setError('Voce nao tem permissao para acessar esta pagina');
             const timeout = setTimeout(() => navigate('/people'), 2000);
             return () => clearTimeout(timeout);
         }
@@ -72,7 +72,7 @@ export const Users = () => {
             const response = await apiClient.get('/users');
             setUsers(response.data);
         } catch (err: unknown) {
-            setError((err as ApiError).response?.data?.message as string || 'Erro ao carregar usuários');
+            setError((err as ApiError).response?.data?.message as string || 'Erro ao carregar usuarios');
         } finally {
             setLoading(false);
         }
@@ -107,15 +107,15 @@ export const Users = () => {
     };
 
     const handleDelete = async (userId: number) => {
-        if (!window.confirm('Tem certeza que deseja deletar este usuário?')) {
+        if (!window.confirm('Tem certeza que deseja deletar este usuario?')) {
             return;
         }
 
         try {
             await apiClient.delete(`/users/${userId}`);
-            setUsers(users.filter(u => u.id !== userId));
+            setUsers(users.filter((user) => user.id !== userId));
         } catch (err: unknown) {
-            alert((err as ApiError).response?.data?.message || 'Erro ao deletar usuário');
+            alert((err as ApiError).response?.data?.message || 'Erro ao deletar usuario');
         }
     };
 
@@ -123,12 +123,12 @@ export const Users = () => {
         e.preventDefault();
 
         if (!formData.username || !formData.email || !formData.role) {
-            alert('Preencha todos os campos obrigatórios');
+            alert('Preencha todos os campos obrigatorios');
             return;
         }
 
         if (!editingUser && !formData.password) {
-            alert('Senha é obrigatória para novos usuários');
+            alert('Senha e obrigatoria para novos usuarios');
             return;
         }
 
@@ -161,7 +161,7 @@ export const Users = () => {
             const errorMessage = typeof apiError.response?.data?.message === 'string'
                 ? apiError.response.data.message
                 : apiError.response?.data?.message?.[0]?.messages?.[0]?.message;
-            alert(errorMessage || 'Erro ao salvar usuário');
+            alert(errorMessage || 'Erro ao salvar usuario');
         }
     };
 
@@ -177,86 +177,81 @@ export const Users = () => {
     }
 
     return (
-        <div className={styles.container}>
-            <Header isAdmin={isAdmin} />
+        <Layout isAdmin={isAdmin} containerClassName={styles.container} mainClassName={styles.main}>
+            <div className={styles.titleRow}>
+                <h2 className={styles.title}>Gerenciar Usuarios</h2>
+                <button onClick={handleCreate} className={styles.createButton}>
+                    + Novo Usuario
+                </button>
+            </div>
 
-            <main className={styles.main}>
-                <div className={styles.titleRow}>
-                    <h2 className={styles.title}>Gerenciar Usuários</h2>
-                    <button onClick={handleCreate} className={styles.createButton}>
-                        + Novo Usuário
-                    </button>
+            {loading && <div className={styles.loading}>Carregando...</div>}
+
+            {error && !isAdmin && (
+                <div className={styles.errorContainer}>
+                    <p className={styles.errorMessage}>{error}</p>
                 </div>
+            )}
 
-                {loading && <div className={styles.loading}>Carregando...</div>}
-
-                {error && !isAdmin && (
-                    <div className={styles.errorContainer}>
-                        <p className={styles.errorMessage}>{error}</p>
-                    </div>
-                )}
-
-                {!loading && isAdmin && users.length > 0 && (
-                    <div className={styles.tableContainer}>
-                        <table className={styles.table}>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((user) => (
-                                    <tr key={user.id}>
-                                        <td>{user.id}</td>
-                                        <td>{user.username}</td>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            <span className={styles.roleBadge}>
-                                                {user.role?.name || 'N/A'}
-                                            </span>
-                                        </td>
-                                        <td className={styles.actions}>
-                                            <button
-                                                onClick={() => handleEdit(user)}
-                                                className={styles.editButton}
-                                            >
+            {!loading && isAdmin && users.length > 0 && (
+                <div className={styles.tableContainer}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((user) => (
+                                <tr key={user.id}>
+                                    <td>{user.username}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <span className={styles.roleBadge}>{user.role?.name}</span>
+                                    </td>
+                                    <td>
+                                        <div className={styles.actions}>
+                                            <button onClick={() => handleEdit(user)} className={styles.editButton}>
                                                 Editar
                                             </button>
-                                            <button
-                                                onClick={() => handleDelete(user.id)}
-                                                className={styles.deleteButton}
-                                            >
+                                            <button onClick={() => handleDelete(user.id)} className={styles.deleteButton}>
                                                 Deletar
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </main>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            {!loading && isAdmin && users.length === 0 && (
+                <div className={styles.empty}>Nenhum usuario encontrado</div>
+            )}
 
             {showModal && (
-                <div className={styles.modalOverlay} onClick={closeModal}>
-                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                        <h3 className={styles.modalTitle}>
-                            {editingUser ? 'Editar Usuário' : 'Novo Usuário'}
-                        </h3>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modal}>
+                        <div className={styles.modalHeader}>
+                            <h3 className={styles.modalTitle}>
+                                {editingUser ? 'Editar Usuario' : 'Novo Usuario'}
+                            </h3>
+                            <button onClick={closeModal} className={styles.closeButton}>x</button>
+                        </div>
 
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <div className={styles.inputGroup}>
-                                <label>Username *</label>
+                                <label>Nome de usuario *</label>
                                 <input
                                     type="text"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                     className={styles.input}
-                                    required
+                                    placeholder="Nome do usuario"
                                 />
                             </div>
 
@@ -267,31 +262,30 @@ export const Users = () => {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className={styles.input}
-                                    required
+                                    placeholder="email@exemplo.com"
                                 />
                             </div>
 
                             <div className={styles.inputGroup}>
                                 <label>
                                     Senha {!editingUser && '*'}
+                                    {editingUser && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className={styles.togglePassword}
+                                        >
+                                            {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                                        </button>
+                                    )}
                                 </label>
-                                <div className={styles.passwordField}>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        className={styles.input}
-                                        placeholder={editingUser ? 'Deixe em branco para não alterar' : ''}
-                                        required={!editingUser}
-                                    />
-                                    <button
-                                        type="button"
-                                        className={styles.togglePassword}
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                                    </button>
-                                </div>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className={styles.input}
+                                    placeholder={editingUser ? 'Deixe vazio para manter' : 'Senha'}
+                                />
                             </div>
 
                             <div className={styles.inputGroup}>
@@ -300,36 +294,26 @@ export const Users = () => {
                                     value={formData.role}
                                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                     className={styles.select}
-                                    required
                                 >
-                                    <option value="">Selecione uma role</option>
+                                    <option value="">Selecione</option>
                                     {roles.map((role) => (
-                                        <option key={role.id} value={role.id}>
-                                            {role.name}
-                                        </option>
+                                        <option key={role.id} value={role.id}>{role.name}</option>
                                     ))}
                                 </select>
                             </div>
 
                             <div className={styles.modalActions}>
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className={styles.cancelButton}
-                                >
+                                <button type="button" onClick={closeModal} className={styles.cancelButton}>
                                     Cancelar
                                 </button>
-                                <button
-                                    type="submit"
-                                    className={styles.submitButton}
-                                >
-                                    {editingUser ? 'Salvar' : 'Criar'}
+                                <button type="submit" className={styles.submitButton}>
+                                    {editingUser ? 'Atualizar' : 'Criar'}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
-        </div>
+        </Layout>
     );
 };

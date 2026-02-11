@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../auth/authService';
 import styles from './Login.module.css';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import programmingImage from '../assets/undraw_programming.svg';
 
 interface ApiError {
     response?: {
@@ -25,6 +25,12 @@ export const Login = () => {
     const [searchParams] = useSearchParams();
 
     const sessionExpired = searchParams.get('session') === 'expired';
+
+    useEffect(() => {
+        if (authService.isAuthenticated()) {
+            navigate('/people');
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -51,56 +57,77 @@ export const Login = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.card}>
-                <h1 className={styles.title}>Axion Test</h1>
+            <div className={styles.leftPanel}>
+                <div className={styles.card}>
+                    <h1 className={styles.logo}>AXION</h1>
 
-                {sessionExpired && (
-                    <div className={styles.warning}>
-                        Sua sessão expirou. Faça login novamente.
-                    </div>
-                )}
+                    {sessionExpired && (
+                        <div className={styles.warning}>
+                            Sua sessão expirou. Faça login novamente.
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.field}>
-                        <label htmlFor="email">E-mail</label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="axioner@axion.company"
-                            disabled={loading}
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.field}>
+                            <label htmlFor="email">Email</label>
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="seunome@email.com"
+                                disabled={loading}
+                            />
+                        </div>
 
-                    <div className={styles.field}>
-                        <label htmlFor="password">Senha</label>
-                        <div className={styles.passwordField}>
+                        <div className={styles.field}>
+                            <label htmlFor="password">Password</label>
                             <input
                                 id="password"
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
+                                placeholder="Password"
                                 disabled={loading}
                             />
-                            <button
-                                type="button"
-                                className={styles.togglePassword}
-                                onClick={() => setShowPassword(!showPassword)}
-                                disabled={loading}
-                            >
-                                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                            </button>
                         </div>
-                    </div>
 
-                    {error && <div className={styles.error}>{error}</div>}
+                        <div className={styles.checkboxField}>
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    checked={showPassword}
+                                    onChange={(e) => setShowPassword(e.target.checked)}
+                                    disabled={loading}
+                                />
+                                <span>Mostrar a senha.</span>
+                            </label>
+                        </div>
 
-                    <button type="submit" disabled={loading} className={styles.button}>
-                        {loading ? 'Entrando...' : 'Entrar'}
-                    </button>
-                </form>
+                        <div className={styles.link}>
+                            Problemas para acessar sua conta?
+                        </div>
+
+                        {error && <div className={styles.error}>{error}</div>}
+
+                        <button type="submit" disabled={loading} className={styles.button}>
+                            {loading ? 'Entrando...' : 'Acessar'}
+                        </button>
+
+                        <div className={styles.divider}>OU</div>
+
+                        <button type="button" className={styles.registerButton} disabled={loading}>
+                            Cadastrar
+                        </button>
+
+                        <div className={styles.footer}>
+                            <a href="#">Termos de uso</a> • <a href="#">Política de privacidade</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div className={styles.rightPanel}>
+                <img src={programmingImage} alt="Programming illustration" className={styles.illustration} />
             </div>
         </div>
     );

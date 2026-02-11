@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: white;
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -10,16 +10,29 @@
   padding: 3rem 2rem;
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0;
+.titleSection {
+  margin-bottom: 3rem;
 }
 
-.titleRow {
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.05em;
+}
+
+.titleUnderline {
+  width: 100%;
+  height: 3px;
+  background: #6c63ff;
+  border-radius: 2px;
+}
+
+.actionsRow {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 0.75rem;
   align-items: center;
   margin-bottom: 2rem;
 }
@@ -38,8 +51,8 @@
 }
 
 .sortButton:hover {
-  border-color: #818cf8;
-  color: #818cf8;
+  border-color: #6c63ff;
+  color: #6c63ff;
   background: #f5f6ff;
 }
 
@@ -63,7 +76,7 @@
 
 .retryButton {
   padding: 0.75rem 1.5rem;
-  background: #818cf8;
+  background: #6c63ff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -75,9 +88,9 @@
 }
 
 .retryButton:hover {
-  background: #6366f1;
+  background: #5952d4;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
 }
 
 .empty {
@@ -89,28 +102,42 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  --card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {
-  background: white;
   padding: 0;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
   transition: all 0.2s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: transparent;
 }
 
 .cardImageWrapper {
   width: 100%;
-  height: 200px;
+  height: 280px;
   overflow: hidden;
   position: relative;
+  border-radius: 8px;
 }
 
 .cardImage {
@@ -131,13 +158,13 @@
 
 .cardActions {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 1rem;
+  right: 1rem;
   display: flex;
   gap: 0.5rem;
   opacity: 0;
   transition: opacity 0.2s;
-  z-index: 2;
+  z-index: 10;
 }
 
 .cardAction {
@@ -155,7 +182,7 @@
 
 .cardAction:hover {
   background: white;
-  color: #818cf8;
+  color: #6c63ff;
 }
 
 .cardActionDelete {
@@ -177,12 +204,15 @@
 }
 
 .cardTitle {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: white;
   margin: 0;
-  text-align: center;
-  padding: 1rem;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .actions {
@@ -193,7 +223,7 @@
 
 .addButton {
   padding: 0.625rem 1.25rem;
-  background: #818cf8;
+  background: #6c63ff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -208,7 +238,7 @@
 }
 
 .addButton:hover {
-  background: #6366f1;
+  background: #5952d4;
   transform: translateY(-1px);
 }
 
@@ -299,8 +329,8 @@
 
 .input:focus {
   outline: none;
-  border-color: #818cf8;
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
   background: white;
 }
 
@@ -339,7 +369,7 @@
 .submitButton {
   flex: 1;
   padding: 0.875rem;
-  background: #818cf8;
+  background: #6c63ff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -351,7 +381,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #6366f1;
+  background: #5952d4;
 }
 
 .submitButton:disabled {

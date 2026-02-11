@@ -5,13 +5,20 @@ import styles from './Layout.module.css';
 interface LayoutProps {
     children: ReactNode;
     isAdmin?: boolean;
+    containerClassName?: string;
+    mainClassName?: string;
 }
 
-export const Layout = ({ children, isAdmin = false }: LayoutProps) => {
+export const Layout = ({
+    children,
+    isAdmin = false,
+    containerClassName,
+    mainClassName
+}: LayoutProps) => {
     return (
-        <div className={styles.container}>
+        <div className={containerClassName ?? styles.container}>
             <Header isAdmin={isAdmin} />
-            <main className={styles.main}>
+            <main className={mainClassName ?? styles.main}>
                 {children}
             </main>
         </div>

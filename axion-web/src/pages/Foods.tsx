@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
-import { Header } from '../components/Header';
+import { Layout } from '../components/Layout';
+import { ItemCard } from '../components/ItemCard';
+import { Modal } from '../components/Modal';
+import { Lightbox } from '../components/Lightbox';
 import { useAdminCheck } from '../hooks/useAdminCheck';
 import styles from './Foods.module.css';
-import { FiPlus, FiEdit2, FiTrash2, FiX } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 
 interface ApiError {
     response?: {
@@ -32,7 +35,7 @@ export const Foods = () => {
     const [formData, setFormData] = useState({ name: '', link: '' });
     const [formError, setFormError] = useState('');
     const [saving, setSaving] = useState(false);
-    const [previewImage, setPreviewImage] = useState<{ name: string, link: string } | null>(null);
+    const [previewImage, setPreviewImage] = useState<Food | null>(null);
 
     const fetchFoods = async () => {
         setLoading(true);
@@ -120,129 +123,92 @@ export const Foods = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <Header isAdmin={isAdmin} />
+        <Layout isAdmin={isAdmin} containerClassName={styles.container} mainClassName={styles.main}>
+            <div className={styles.titleSection}>
+                <h2 className={styles.title}>LIST OF FOODS</h2>
+                <div className={styles.titleUnderline}></div>
+            </div>
 
-            <main className={styles.main}>
-                <div className={styles.titleRow}>
-                    <h2 className={styles.title}>Comidas</h2>
-                    <div className={styles.actions}>
-                        {isAdmin && (
-                            <button onClick={openCreateModal} className={styles.addButton}>
-                                <FiPlus size={18} /> Novo
-                            </button>
-                        )}
-                        <button onClick={toggleSort} className={styles.sortButton}>
-                            {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
-                        </button>
-                    </div>
+            <div className={styles.actionsRow}>
+                {isAdmin && (
+                    <button onClick={openCreateModal} className={styles.addButton}>
+                        <FiPlus size={18} /> Novo
+                    </button>
+                )}
+                <button onClick={toggleSort} className={styles.sortButton}>
+                    {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+                </button>
+            </div>
+
+            {loading && <div className={styles.loading}>Carregando...</div>}
+
+            {error && (
+                <div className={styles.errorContainer}>
+                    <p className={styles.errorMessage}>{error}</p>
+                    <button onClick={fetchFoods} className={styles.retryButton}>
+                        Tentar novamente
+                    </button>
                 </div>
+            )}
 
-                {loading && <div className={styles.loading}>Carregando...</div>}
+            {!loading && !error && foods.length === 0 && (
+                <div className={styles.empty}>Nenhuma comida encontrada</div>
+            )}
 
-                {error && (
-                    <div className={styles.errorContainer}>
-                        <p className={styles.errorMessage}>{error}</p>
-                        <button onClick={fetchFoods} className={styles.retryButton}>
-                            Tentar novamente
-                        </button>
-                    </div>
-                )}
+            {!loading && !error && sortedFoods.length > 0 && (
+                <div className={styles.grid}>
+                    {sortedFoods.map((food) => (
+                        <ItemCard
+                            key={food.id}
+                            id={food.id}
+                            name={food.name}
+                            imageUrl={food.link}
+                            onClick={() => food.link && setPreviewImage(food)}
+                            onEdit={isAdmin ? () => openEditModal(food) : undefined}
+                            onDelete={isAdmin ? () => handleDelete(food) : undefined}
+                            showActions={isAdmin}
+                        />
+                    ))}
+                </div>
+            )}
 
-                {!loading && !error && foods.length === 0 && (
-                    <div className={styles.empty}>Nenhuma comida encontrada</div>
-                )}
+            <Lightbox
+                isOpen={!!previewImage}
+                imageUrl={previewImage?.link || ''}
+                caption={previewImage?.name}
+                onClose={() => setPreviewImage(null)}
+            />
 
-                {!loading && !error && sortedFoods.length > 0 && (
-                    <div className={styles.grid}>
-                        {sortedFoods.map((food) => (
-                            <div
-                                key={food.id}
-                                className={styles.card}
-                                onClick={() => food.link && setPreviewImage(food)}
-                            >
-                                {isAdmin && (
-                                    <div className={styles.cardActions} onClick={(e) => e.stopPropagation()}>
-                                        <button onClick={() => openEditModal(food)} className={styles.cardAction}>
-                                            <FiEdit2 size={14} />
-                                        </button>
-                                        <button onClick={() => handleDelete(food)} className={styles.cardActionDelete}>
-                                            <FiTrash2 size={14} />
-                                        </button>
-                                    </div>
-                                )}
-                                {food.link && (
-                                    <div className={styles.cardImageWrapper}>
-                                        <img
-                                            src={food.link}
-                                            alt={food.name}
-                                            className={styles.cardImage}
-                                        />
-                                    </div>
-                                )}
-                                <h3 className={styles.cardTitle}>{food.name}</h3>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {previewImage && (
-                    <div className={styles.lightboxOverlay} onClick={() => setPreviewImage(null)}>
-                        <button className={styles.lightboxClose} onClick={() => setPreviewImage(null)}>
-                            <FiX size={24} />
-                        </button>
-                        <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-                            <img src={previewImage.link} alt={previewImage.name} className={styles.lightboxImage} />
-                            <p className={styles.lightboxCaption}>{previewImage.name}</p>
-                        </div>
-                    </div>
-                )}
-
-                {showModal && (
-                    <div className={styles.modalOverlay} onClick={closeModal}>
-                        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                            <div className={styles.modalHeader}>
-                                <h3>{editingFood ? 'Editar Comida' : 'Nova Comida'}</h3>
-                                <button onClick={closeModal} className={styles.closeButton}>
-                                    <FiX size={20} />
-                                </button>
-                            </div>
-                            <form onSubmit={handleSubmit} className={styles.modalForm}>
-                                <div className={styles.inputGroup}>
-                                    <label>Nome *</label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className={styles.input}
-                                        placeholder="Nome da comida"
-                                        required
-                                    />
-                                </div>
-                                <div className={styles.inputGroup}>
-                                    <label>URL da Imagem</label>
-                                    <input
-                                        type="url"
-                                        value={formData.link}
-                                        onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                                        className={styles.input}
-                                        placeholder="https://exemplo.com/imagem.jpg"
-                                    />
-                                </div>
-                                {formError && <div className={styles.formError}>{formError}</div>}
-                                <div className={styles.modalActions}>
-                                    <button type="button" onClick={closeModal} className={styles.cancelButton}>
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" disabled={saving} className={styles.submitButton}>
-                                        {saving ? 'Salvando...' : 'Salvar'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-            </main>
-        </div>
+            <Modal
+                isOpen={showModal}
+                onClose={closeModal}
+                title={editingFood ? 'Editar Comida' : 'Nova Comida'}
+                onSubmit={handleSubmit}
+                isSubmitting={saving}
+                error={formError}
+            >
+                <div className={styles.inputGroup}>
+                    <label>Nome *</label>
+                    <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className={styles.input}
+                        placeholder="Nome da comida"
+                        required
+                    />
+                </div>
+                <div className={styles.inputGroup}>
+                    <label>URL da Imagem</label>
+                    <input
+                        type="url"
+                        value={formData.link}
+                        onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                        className={styles.input}
+                        placeholder="https://exemplo.com/imagem.jpg"
+                    />
+                </div>
+            </Modal>
+        </Layout>
     );
 };

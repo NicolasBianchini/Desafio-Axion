@@ -6,6 +6,7 @@ import { Places } from './pages/Places';
 import { Profile } from './pages/Profile';
 import { Users } from './pages/Users';
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import { authService } from './auth/authService';
 import './styles/globals.global.css';
 
 function App() {
@@ -59,7 +60,15 @@ function App() {
           }
         />
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to={authService.isAuthenticated() ? '/people' : '/login'}
+              replace
+            />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

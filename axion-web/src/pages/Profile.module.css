@@ -97,7 +97,7 @@
 
 .input:focus {
   outline: none;
-  border-color: #818cf8;
+  border-color: #6c63ff;
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
   background: white;
 }
@@ -147,7 +147,7 @@
 
 .submitButton {
   padding: 0.875rem;
-  background: #818cf8;
+  background: #6c63ff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -160,7 +160,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #6366f1;
+  background: #5952d4;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }

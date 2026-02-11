@@ -247,7 +247,7 @@
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #818cf8;
+  border-color: #6c63ff;
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
   background: white;
 }

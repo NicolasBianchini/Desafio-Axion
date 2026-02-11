@@ -10,7 +10,6 @@ export const apiClient = axios.create({
     },
 });
 
-// Interceptor para adicionar token em todas as requisições
 apiClient.interceptors.request.use(
     (config) => {
         const token = authStore.getToken();
@@ -22,7 +21,6 @@ apiClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Interceptor para tratar 401 (não autorizado)
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {

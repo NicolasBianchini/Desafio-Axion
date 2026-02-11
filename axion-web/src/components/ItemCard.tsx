@@ -38,16 +38,20 @@ export const ItemCard = ({
                     )}
                 </div>
             )}
-            {imageUrl && (
+            {imageUrl ? (
                 <div className={styles.cardImageWrapper}>
                     <img
                         src={imageUrl}
                         alt={name}
                         className={styles.cardImage}
                     />
+                    <h3 className={styles.cardTitle}>{name}</h3>
+                </div>
+            ) : (
+                <div className={styles.cardNoImage}>
+                    <h3 className={styles.cardTitleNoImage}>{name}</h3>
                 </div>
             )}
-            <h3 className={styles.cardTitle}>{name}</h3>
         </div>
     );
 };
