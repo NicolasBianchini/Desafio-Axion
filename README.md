@@ -1,4 +1,4 @@
-# Projeto Axian
+# Projeto Axion
 
 ## Desafio
 Este projeto foi desenvolvido como parte de um desafio técnico para avaliar habilidades em desenvolvimento full-stack. O objetivo principal é demonstrar a capacidade de criar uma aplicação funcional que integre um backend robusto com um frontend moderno, utilizando tecnologias amplamente adotadas no mercado.
@@ -19,7 +19,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico para avaliar hab
 ---
 
 ## Descrição
-O Projeto Axian é uma aplicação composta por uma API e uma interface web. O objetivo do projeto é fornecer funcionalidades para gerenciar dados relacionados a alimentos, pessoas e lugares, além de oferecer uma interface amigável para interação com esses dados.
+O Projeto Axion é uma aplicação composta por uma API e uma interface web. O objetivo do projeto é fornecer funcionalidades para gerenciar dados relacionados a alimentos, pessoas e lugares, além de oferecer uma interface amigável para interação com esses dados.
 
 ---
 
